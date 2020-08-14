@@ -64,18 +64,18 @@ class meiroPlayer {
       return;
     }
     var dcts = this.checkCanDict(this.pt, this.dct);
-    console.log("move_meiro(turn_)");
-    console.log(dcts);
+    // console.log("move_meiro(turn_)");
+    // console.log(dcts);
     if (dcts.length) {
-      console.log(dcts);
+      // console.log(dcts);
       this.dct = dcts[0].Dict;
       this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
       this.registHis(this.pt);
       this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
       this.registHis(this.pt);
     }
-    console.log("move_meiro x:" + this.pt.x + " y:" + this.pt.y);
-    console.log(this.his);
+    // console.log("move_meiro x:" + this.pt.x + " y:" + this.pt.y);
+    // console.log(this.his);
     this.move_meiro(turn_ - 1);
   }
 
@@ -124,18 +124,18 @@ class meiroPlayer {
    * @param {*} point_
    */
   checkCanDict(point_, dict_) {
-    console.log("point_:" + point_);
-    console.log("dict_:" + dict_);
+    // console.log("point_:" + point_);
+    // console.log("dict_:" + dict_);
     var dictList = [];
     chkLists.forEach((ls) => {
-      console.log(ls);
+      // console.log(ls);
       if (ls.dict == dict_) {
         dictList = ls.chkls;
       }
     });
-    console.log("dictList");
-    console.log(dictList);
-    console.log("point_.x:" + point_.x);
+    // console.log("dictList");
+    // console.log(dictList);
+    // console.log("point_.x:" + point_.x);
     var canDict = [];
     dictList.forEach((dct_) => {
       var kType_ = this.check_kType(dct_, this.map, point_.x, point_.y, 1);
@@ -228,10 +228,10 @@ class meiroPlayer {
       ] = kType.SPACE;
       this.his.pop();
       this.backFlg = true;
-      console.log("registHis_pop");
+      // console.log("registHis_pop");
     } else {
       this.his.push({ x: point_.x, y: point_.y });
-      console.log("registHis_push");
+      // console.log("registHis_push");
     }
     // }
   }

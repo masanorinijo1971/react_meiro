@@ -41,7 +41,7 @@ export default class MeiroMap extends Component {
 
   _renderMap(path_, line_) {
     console.log("MeiroMap_renderMap");
-    console.log(line_);
+    // console.log(line_);
     var view_ = [];
     if (path_.length > 0) {
       path_.forEach((ms, y_) => {
@@ -66,8 +66,8 @@ export default class MeiroMap extends Component {
         y={3}
         points={line_}
         type={"0000"}
-        color={"#60f000"}
-        width={this.state.width}
+        color={"#ff00ff"}
+        width={this.state.width + 6}
         length={this.state.length}
       />
     );

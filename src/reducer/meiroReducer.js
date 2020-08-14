@@ -57,8 +57,8 @@ export const meiroState = {
 
 const defaultState = {
   // meiroCreater: new meiroCreater(31, 31, 2),
-  width: 49, //49
-  height: 65, //65
+  width: 25, //49
+  height: 25, //65
   createrCnt: 3, //3
   status: meiroState.wakuEnd,
   createStep: 3, //一回あたりの壁生成ステップ数
@@ -128,9 +128,10 @@ const handlers = {
    */
   [setAnsMeiro]: (state, action) => {
     console.log("set_ans_meiro_act");
+    var moveHis = meiroPlayer.moveHis();
     return {
       ...state,
-      ans: meiroPlayer.moveHis(),
+      ans: moveHis,
     };
   },
 

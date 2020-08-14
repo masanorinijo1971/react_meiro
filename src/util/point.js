@@ -22,6 +22,9 @@ export default class Point {
     );
   }
 
+  ratio(ratio_) {
+    return { x: this.x * this.ratio, y: this.y * ratio };
+  }
   /**
    * 自身の長さ
    */

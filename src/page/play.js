@@ -81,6 +81,16 @@ class Play extends Component {
     return syori;
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log("play_getDerivedStateFromProps");
+    return {
+      map: nextProps.map, //ex[[3333333],[3000003],,,]
+      drawPath: nextProps.drawPath, //ex[[1100],[1001],,,]
+      ans: nextProps.ans,
+      isLoading: nextProps.isLoading,
+    };
+  }
+
   componentWillReceiveProps(nextProps) {
     // Propsの変更をstateに反映する場合はここに記述
     this.setState({
@@ -108,6 +118,7 @@ class Play extends Component {
   componentDidUpdate(prevProps, prevState) {
     // コンポーネントが更新されDOMが一新された直後に実行されます。 このメソッドは初期描画では呼び出されません。
     // コンポーネントが更新された際にDOMを操作したい場合にはこれを使用して下さい。
+
     console.log("play_componentDidUpdate");
   }
 
@@ -264,9 +275,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(loadStart());
   },
   onMoveMeiro: () => {
+    console.log("play_onMoveMeiro");
+    dispatch(loadStart());
     mp.move_meiro(1);
     dispatch(setAnsMeiro());
-    // mc.showMap();
+    dispatch(loadEnd());
+    mc.showMap();
   },
   onUpdateMeiro: () => {
     console.log("play_onUpdateMeiro");
@@ -275,6 +289,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onCreateMeiro: () => {
     dispatch(createMeiro({}));
+    dispatch(updateMeiro({}));
   },
   onCreateMeiroAll: () => {
     dispatch(createMeiroAll({}));
@@ -301,7 +316,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onInitMeiro: () => {
       dispatchProps.onInitMeiro();
     },
+    onMoveMeiro: () => {
+      dispatchProps.onMoveMeiro();
+    },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Play);
+export default connect(mapStateToProps, mapDispatchToProps)(Play);

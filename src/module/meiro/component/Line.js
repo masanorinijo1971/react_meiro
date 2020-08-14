@@ -52,30 +52,7 @@ class Line extends Component {
    */
   _madePath(points_, x_, y_, width_, length_) {
     const path = Path();
-    var path_points = this._madePathPoints(points_);
-
-    // var centerPt = new Point(x_, y_);
-    // var pt_ = new Point(0, 0);
-    // var Pt1 = pt_.copy().add_xy(width_ / 2, -width_ / 2);
-    // var Pt2 = pt_.copy().add_xy(width_ / 2, width_ / 2);
-    // var Pt1_ = pt_.copy().add_xy(length_ / 2, -width_ / 2);
-    // var Pt2_ = pt_.copy().add_xy(length_ / 2, width_ / 2);
-
-    // var types = String(type_).split("");
-    // var path_points = [];
-
-    // types.forEach((type) => {
-    //   path_points.push(Pt1.copy().add_point(centerPt));
-    //   if (type == "1") {
-    //     path_points.push(Pt1_.copy().add_point(centerPt));
-    //     path_points.push(Pt2_.copy().add_point(centerPt));
-    //   }
-    //   path_points.push(Pt2.copy().add_point(centerPt));
-    //   Pt1.rot(90);
-    //   Pt2.rot(90);
-    //   Pt1_.rot(90);
-    //   Pt2_.rot(90);
-    // });
+    var path_points = this._madePathPoints(points_, length_, width_);
 
     if (path_points.length) {
       var fstFlg = true;
@@ -93,17 +70,35 @@ class Line extends Component {
   }
 
   /**
+   * pointをスケーリングする
+   * @param {*} points_
+   * @param {*} x_
+   * @param {*} y_
+   * @param {*} width_
+   * @param {*} length_
+   */
+  _scalePoints(points_, length_) {
+    return points_.map((pt) => {
+      return {
+        x: ((pt.x - 1) * length_) / 2 + length_ / 2,
+        y: ((pt.y - 1) * length_) / 2 + length_ / 2,
+      };
+    });
+  }
+
+  /**
    * pathポイントを生成する
    * @param {*} point_
    */
-  _madePathPoints(point_) {
-    var new_pt_ = this._recalcPoint(point_);
+  _madePathPoints(point_, length_, width_) {
+    var scale_pt = this._scalePoints(point_, length_);
+    var new_pt_ = this._recalcPoint(scale_pt);
     if (new_pt_ !== undefined && new_pt_ !== null && new_pt_.length == 0) {
       return [];
     }
     var conGrps_ = [];
     new_pt_.forEach((pt_) => {
-      var conGrp_ = this._generatePointConnects(pt_, 2);
+      var conGrp_ = this._generatePointConnects(pt_, width_);
       conGrps_.push(conGrp_);
       if (conGrps_.length > 1) {
         // connector同士を再結合する。
@@ -170,6 +165,7 @@ class Line extends Component {
       con_ = con_.con;
     } while (firstPoint !== con_.myPoint());
 
+    // return path;
     return this._recalcPoint(path);
   }
 
