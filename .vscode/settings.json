@@ -1,0 +1,7 @@
+{
+  "html.format.preserveNewLines": false,
+  "typescript.format.enable": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.format.enable": true,
+  "editor.formatOnSave": true
+}

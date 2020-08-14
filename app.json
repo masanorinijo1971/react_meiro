@@ -1,0 +1,10 @@
+{
+  "name": "meiro",
+  "displayName": "meiro",
+  "expo": {
+    "name": "meiro",
+    "slug": "meiro",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"]
+  }
+}
