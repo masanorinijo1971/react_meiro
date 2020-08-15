@@ -26,7 +26,7 @@ import Point from "../util/point";
 class Play extends Component {
   // var className="Play"
   constructor(props) {
-    console.log("play_constructor(props)");
+    console.log("play_constructor");
     super(props);
     this.state = {
       gestureName: "none",
@@ -57,28 +57,12 @@ class Play extends Component {
 
   componentDidMount() {
     console.log("play_componentDidMount()");
-    this.onLoading();
-    // this.props.onInitMeiro();
+    // this.onLoading();
+    this.props.onInitMeiro();
   }
 
   onLoading() {
-    console.log("play_onLoading");
-    var syori = new Promise((resolve, reject) => {
-      // setTimeout(() => {
-      //   resolve();
-      // }, 10000);
-      mc.init(this.state.width, this.state.height, this.state.createrCnt);
-      while (!mc.moveCreater(this.state.createrCnt));
-      mp.set_map(mc.map);
-      mc.showMap();
-      console.log("play_onLoading_promise_1");
-      resolve("OK:" + this.state.width + "_" + this.state.height);
-    }).then((result) => {
-      console.log("play_onLoading_promise_then");
-      console.log("result:" + result);
-      this.props.onUpdateMeiro();
-    });
-    return syori;
+    this.props.onLoading();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -258,18 +242,27 @@ class Play extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onInitMeiro: () => {
+  onInitMeiro: (dispatchProps) => {
     console.log("onInitMeiro:");
-    // waitAsync(10000);
-    loading(
-      dispatch,
-      function () {
-        dispatch(initMeiro({}));
-      },
-      function () {
-        // Actions.home();
-      }
+    mc.init(
+      dispatchProps.width,
+      dispatchProps.height,
+      dispatchProps.createrCnt
     );
+    // waitAsync(10000);
+    dispatch(loadStart());
+    dispatch(initMeiro({}));
+    dispatch(updateMeiro({}));
+    dispatch(loadEnd());
+    // loading(
+    //   dispatch,
+    //   function () {
+    //     dispatch(initMeiro({}));
+    //   },
+    //   function () {
+    //     Actions.home();
+    //   }
+    // );
   },
   onSetLoading: () => {
     dispatch(loadStart());
@@ -294,6 +287,22 @@ const mapDispatchToProps = (dispatch) => ({
   onCreateMeiroAll: () => {
     dispatch(createMeiroAll({}));
   },
+  onLoading: () => {
+    console.log("play_onLoading");
+    dispatch(loadStart());
+    mc.init(
+      dispatchProps.width,
+      dispatchProps.height,
+      dispatchProps.createrCnt
+    );
+    while (!mc.moveCreater(dispatchProps.createrCnt));
+    mp.set_map(mc.map);
+    mc.showMap();
+    console.log("play_onLoading_promise_then");
+    console.log("result:" + result);
+    dispatch(updateMeiro({}));
+    dispatch(loadEnd());
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -314,12 +323,34 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...stateProps,
     ...dispatchProps,
     onInitMeiro: () => {
-      dispatchProps.onInitMeiro();
+      dispatchProps.onInitMeiro(stateProps);
     },
     onMoveMeiro: () => {
       dispatchProps.onMoveMeiro();
     },
+    onLoading_promise: () => {
+      console.log("play_onLoading");
+      var syori = new Promise((resolve, reject) => {
+        dispatch(loadStart());
+        mc.init(
+          dispatchProps.width,
+          dispatchProps.height,
+          dispatchProps.createrCnt
+        );
+        while (!mc.moveCreater(dispatchProps.createrCnt));
+        mp.set_map(mc.map);
+        mc.showMap();
+        console.log("play_onLoading_promise_1");
+        resolve("OK:" + dispatchProps.width + "_" + dispatchProps.height);
+      }).then((result) => {
+        console.log("play_onLoading_promise_then");
+        console.log("result:" + result);
+        dispatch(updateMeiro({}));
+        dispatch(loadEnd());
+      });
+      return syori;
+    },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Play);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Play);

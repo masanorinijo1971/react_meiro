@@ -176,21 +176,27 @@ class Line {
         var nearLength = 0;
         conGrp1_.forEach((con1) => {
           conGrp2_.forEach((con2) => {
-            if (nearLength == 0) {
-              nearPear.push(con1);
-              nearPear.push(con2);
-              nearLength = con1.myPoint().lengthFrom(con2.myPoint());
-            } else {
-              var sel_Length = con1.myPoint().lengthFrom(con2.myPoint());
-              if (sel_Length < nearLength) {
-                nearLength = sel_Length;
-                nearPear.splice(0);
+            if (
+              this.isOneLine(con1.myPoint(), con1.conPoint(), con2.myPoint()) ||
+              this.isOneLine(con2.myPoint(), con2.conPoint(), con1.myPoint())
+            ) {
+              if (nearLength == 0) {
                 nearPear.push(con1);
                 nearPear.push(con2);
+                nearLength = con1.myPoint().lengthFrom(con2.myPoint());
+              } else {
+                var sel_Length = con1.myPoint().lengthFrom(con2.myPoint());
+                if (sel_Length < nearLength) {
+                  nearLength = sel_Length;
+                  nearPear.splice(0);
+                  nearPear.push(con1);
+                  nearPear.push(con2);
+                }
               }
             }
           });
         });
+        var x = false;
         if (
           this.isOneLine(
             nearPear[0].myPoint(),
@@ -199,12 +205,14 @@ class Line {
           )
         ) {
           var con1_1 = nearPear[0];
+
           var con2_1 = nearPear[1];
           var con1_2 = nearPear[0].conby;
           var con2_2 = nearPear[1].con;
           con2_1.connect_to(con1_1);
           con1_2.connect_to(con2_2);
-          return;
+          x = true;
+          // return;
         }
         if (
           this.isOneLine(
@@ -219,7 +227,11 @@ class Line {
           var con2_2 = nearPear[0].con;
           con2_1.connect_to(con1_1);
           con1_2.connect_to(con2_2);
-          return;
+          x = true;
+          // return;
+        }
+        if (!x) {
+          console.log("xx");
         }
       }
     });
@@ -384,11 +396,10 @@ class Connector {
 
 const line_ = new Line();
 const testPoints = [];
-testPoints.push(new Point(0, 0));
-testPoints.push(new Point(5, 0));
-testPoints.push(new Point(5, 0));
-testPoints.push(new Point(5, 3));
-testPoints.push(new Point(5, 5));
-testPoints.push(new Point(5, 7));
+testPoints.push(new Point(4, 8));
+testPoints.push(new Point(4, 4));
+testPoints.push(new Point(8, 4));
+testPoints.push(new Point(12, 4));
+testPoints.push(new Point(12, 0));
 var ans = line_._madePathPoints(testPoints);
 console.log(ans);

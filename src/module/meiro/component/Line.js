@@ -108,17 +108,22 @@ class Line extends Component {
         var nearLength = 0;
         conGrp1_.forEach((con1) => {
           conGrp2_.forEach((con2) => {
-            if (nearLength == 0) {
-              nearPear.push(con1);
-              nearPear.push(con2);
-              nearLength = con1.myPoint().lengthFrom(con2.myPoint());
-            } else {
-              var sel_Length = con1.myPoint().lengthFrom(con2.myPoint());
-              if (sel_Length < nearLength) {
-                nearLength = sel_Length;
-                nearPear.splice(0);
+            if (
+              this.isOneLine(con1.myPoint(), con1.conPoint(), con2.myPoint()) ||
+              this.isOneLine(con2.myPoint(), con2.conPoint(), con1.myPoint())
+            ) {
+              if (nearLength == 0) {
                 nearPear.push(con1);
                 nearPear.push(con2);
+                nearLength = con1.myPoint().lengthFrom(con2.myPoint());
+              } else {
+                var sel_Length = con1.myPoint().lengthFrom(con2.myPoint());
+                if (sel_Length < nearLength) {
+                  nearLength = sel_Length;
+                  nearPear.splice(0);
+                  nearPear.push(con1);
+                  nearPear.push(con2);
+                }
               }
             }
           });
