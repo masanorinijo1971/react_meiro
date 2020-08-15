@@ -271,13 +271,42 @@ class meiroCreater {
 
   //*********** 迷路を解くロジック　********
 
+  /**
+   * 指定のタイプのポイントを取得する
+   * @param {*} type_
+   */
+  getPointByType(type_) {
+    var point_ = new point(0, 0);
+    this.map.forEach((mxs, indy) => {
+      mxs.forEach((x, indx) => {
+        if (x == type_) {
+          point_.set_x(indx);
+          point_.set_y(indy);
+          return point_;
+        }
+      });
+    });
+    return null;
+  }
+
   /** スタート地点を設定する */
   setStartPoint(x, y) {
+    //既存のスタートポイントを消去する
+    var pt_ = this.getPointByType(kType.START_POINT);
+    if (pt_ != null) {
+      this.map[pt_.y][pt_.x] = kType.SPACE;
+    }
+    this.map[y][x] = kType.START_POINT;
     this.startPt = new point(x, y);
   }
 
   /** ゴール地点を設定する */
   setGoalPoint(x, y) {
+    var pt_ = this.getPointByType(kType.GOAL_POINT);
+    if (pt_ != null) {
+      this.map[pt_.y][pt_.x] = kType.SPACE;
+    }
+    this.map[y][x] = kType.GOAL_POINT;
     this.goalPt = new point(x, y);
   }
 }

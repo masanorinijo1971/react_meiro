@@ -21,6 +21,7 @@ import {
 import { loadEnd, loadStart } from "../reducer/commonReducer";
 import mc from "../module/meiro/service/meiroCreater";
 import mp from "../module/meiro/service/meiroPlayer";
+import { KabeType } from "../module/meiro/service/meiroTypes";
 import { waitAsync } from "../util/waitAsync";
 import Point from "../util/point";
 class Play extends Component {
@@ -40,7 +41,10 @@ class Play extends Component {
       drawPath: props.drawPath, //ex[[1100],[1001],,,]
       ans: props.ans,
       isLoading: props.isLoading,
+      onInitMeiro: props.onInitMeiro(),
+      onMoveMeiro: props.onMoveMeiro(),
     };
+    // this.initMeiro();
     // this.onLoading();
     // props.onLoading;
     // console.log(this.state);
@@ -57,8 +61,7 @@ class Play extends Component {
 
   componentDidMount() {
     console.log("play_componentDidMount()");
-    // this.onLoading();
-    this.props.onInitMeiro();
+    this.initMeiro();
   }
 
   onLoading() {
@@ -112,7 +115,7 @@ class Play extends Component {
 
   initMeiro() {
     console.log("play_initMeiro");
-    this.props.oninitMeiro();
+    this.state.onInitMeiro;
   }
 
   createMeiro() {
@@ -121,8 +124,15 @@ class Play extends Component {
   }
 
   moveMeiro() {
+    console.log("play_moveMeiro");
     this.props.onMoveMeiro();
   }
+
+  ansMeiro() {
+    console.log("play_ansMeiro");
+    this.props.onAnsMeiro();
+  }
+
   createMeiroAll() {
     // this.props.onInitMeiro();
     this.setState({
@@ -153,14 +163,14 @@ class Play extends Component {
   }
   render() {
     console.log("play_render()");
-    const isLoading = this.state.isLoading;
+    // const isLoading = this.state.isLoading;
 
-    // const { isLoading } = this.state;
+    const { isLoading } = this.state;
     return (
       <View style={baseStyle.play}>
         {isLoading ? (
           <View style={baseStyle.play2}>
-            <Ld></Ld>
+            {/* <Ld></Ld> */}
             <TouchableOpacity onPress={this.backHome}>
               <Image
                 style={baseStyle.btn}
@@ -221,13 +231,13 @@ class Play extends Component {
                   source={require("../image/modoru_btn.png")}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.createMeiro.bind(this)}>
+              <TouchableOpacity onPress={this.moveMeiro.bind(this)}>
                 <Image
                   style={baseStyle.btn}
                   source={require("../image/modoru_btn.png")}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={this.moveMeiro.bind(this)}>
+              <TouchableOpacity onPress={this.ansMeiro.bind(this)}>
                 <Image
                   style={baseStyle.btn}
                   source={require("../image/modoru_btn.png")}
@@ -242,38 +252,35 @@ class Play extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onInitMeiro: (dispatchProps) => {
+  onInitMeiro: () => {
     console.log("onInitMeiro:");
-    mc.init(
-      dispatchProps.width,
-      dispatchProps.height,
-      dispatchProps.createrCnt
-    );
-    // waitAsync(10000);
     dispatch(loadStart());
     dispatch(initMeiro({}));
-    dispatch(updateMeiro({}));
+    dispatch(createMeiroAll({}));
+    dispatch(setStGlMeiro({}));
+    // dispatch(updateMeiro({}));
     dispatch(loadEnd());
-    // loading(
-    //   dispatch,
-    //   function () {
-    //     dispatch(initMeiro({}));
-    //   },
-    //   function () {
-    //     Actions.home();
-    //   }
-    // );
-  },
-  onSetLoading: () => {
-    dispatch(loadStart());
   },
   onMoveMeiro: () => {
     console.log("play_onMoveMeiro");
-    dispatch(loadStart());
+    // dispatch(loadStart());
     mp.move_meiro(1);
-    dispatch(setAnsMeiro());
+    // dispatch(setAnsMeiro({}));
+    dispatch(updateMeiro({}));
     dispatch(loadEnd());
     mc.showMap();
+  },
+  onAnsMeiro: () => {
+    console.log("play_onAnsMeiro");
+    // dispatch(loadStart());
+    mp.move_meiro_to_goal({ x: 47, y: 63 });
+    // dispatch(setAnsMeiro({}));
+    dispatch(updateMeiro({}));
+    dispatch(loadEnd());
+    mc.showMap();
+  },
+  onSetLoading: () => {
+    dispatch(loadStart());
   },
   onUpdateMeiro: () => {
     console.log("play_onUpdateMeiro");
@@ -353,4 +360,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Play);
+export default connect(mapStateToProps, mapDispatchToProps)(Play);

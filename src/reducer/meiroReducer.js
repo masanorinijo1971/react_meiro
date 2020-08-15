@@ -60,13 +60,13 @@ const defaultState = {
   width: 49, //49
   height: 65, //65
   createrCnt: 3, //3
-  status: meiroState.wakuEnd,
+  status: meiroState.init,
   createStep: 3, //一回あたりの壁生成ステップ数
   map: [], //ex[[3333333],[3000003],,,]
   drawPath: [], //ex[[1100],[1001],,,]
   ans: [], //start→goalまでの道のり
   start: { x: 1, y: 1 },
-  goal: { x: 48, y: 64 },
+  goal: { x: 47, y: 63 },
 };
 
 const handlers = {
@@ -80,7 +80,8 @@ const handlers = {
     var c_ = action.payload.createrCnt ?? state.createrCnt;
     var st_ = action.payload.createStep ?? state.createStep;
 
-    // meiroCreater.init(w_, h_, c_);
+    meiroCreater.init(w_, h_, c_);
+    meiroPlayer.resetHis();
     return {
       ...state,
       width: w_,
@@ -90,6 +91,7 @@ const handlers = {
       createStep: st_,
       map: meiroCreater.getMap(),
       drawPath: meiroCreater.drawPath(),
+      ans: meiroPlayer.moveHis(),
     };
   },
 
@@ -103,6 +105,7 @@ const handlers = {
       status: meiroCreater.getStatus(),
       map: meiroCreater.getMap(),
       drawPath: meiroCreater.drawPath(),
+      ans: meiroPlayer.moveHis(),
     };
   },
 
@@ -111,15 +114,31 @@ const handlers = {
    */
   [setStGlMeiro]: (state, action) => {
     console.log("set_start_goal_meiro_act");
-    var st_x_ = action.payload.start.x ?? state.start.x;
-    var st_y_ = action.payload.start.y ?? state.start.y;
-    var gl_x_ = action.payload.goal.x ?? state.goal.x;
-    var gl_y_ = action.payload.goal.y ?? state.goal.y;
-
+    if (action.payload.start) {
+      var st_x_ = action.payload.start.x ?? state.start.x;
+      var st_y_ = action.payload.start.y ?? state.start.y;
+    } else {
+      var st_x_ = state.start.x;
+      var st_y_ = state.start.y;
+    }
+    if (action.payload.goal) {
+      var gl_x_ = action.payload.goal.x ?? state.goal.x;
+      var gl_y_ = action.payload.goal.y ?? state.goal.y;
+    } else {
+      var gl_x_ = state.goal.x;
+      var gl_y_ = state.goal.y;
+    }
+    meiroPlayer.set_map(meiroCreater.getMap());
+    meiroPlayer.resetHis();
+    meiroPlayer.setStartPoint({ x: st_x_, y: st_y_ });
+    meiroPlayer.setGoalPoint({ x: gl_x_, y: gl_y_ });
     return {
       ...state,
       start: { x: st_x_, y: st_y_ },
       goal: { x: gl_x_, y: gl_y_ },
+      map: meiroCreater.getMap(),
+      drawPath: meiroCreater.drawPath(),
+      ans: meiroPlayer.moveHis(),
     };
   },
 
@@ -136,12 +155,12 @@ const handlers = {
   },
 
   /**
-   * 使用しない
+   * 迷路を生成する
    */
   [createMeiro]: (state, action) => {
     var st_ = action.payload.createStep ?? state.createrCnt;
-    // var isEnd = meiroCreater.moveCreater(st_);
-    // meiroCreater.showMap();
+    var isEnd = meiroCreater.moveCreater(st_);
+    meiroCreater.showMap();
     return {
       ...state,
       status: isEnd ? meiroState.createEnd : meiroState.createStart,
@@ -151,12 +170,12 @@ const handlers = {
     };
   },
   /**
-   * 使用しない
+   * 迷路を完成まで、生成する
    */
   [createMeiroAll]: (state, action) => {
     var st_ = action.payload.createStep ?? state.createrCnt;
-    // while (!meiroCreater.moveCreater(st_));
-    // meiroCreater.showMap();
+    while (!meiroCreater.moveCreater(st_));
+    meiroCreater.showMap();
     return {
       ...state,
       createStep: st_,

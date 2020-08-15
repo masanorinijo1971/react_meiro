@@ -53,6 +53,39 @@ class meiroPlayer {
     //初期の進む方向
     this.dct = dictType.right;
     this.backFlg = false; //戻るフラグ
+    console.log("meiroPlayer_set_map2");
+  }
+
+  /**
+   * スタート地点をセットする
+   * @param {*} point_
+   */
+  setStartPoint(point_) {
+    //既存のスタートポイントを消去する
+    console.log("meiroPlayer_setStartPoint");
+    var pt_ = this.getPointByType(kType.START_POINT);
+    if (pt_ != null) {
+      this.map[pt_.y][pt_.x] = kType.SPACE;
+    }
+    console.log("meiroPlayer_setStartPoint2");
+    this.map[point_.y][point_.x] = kType.START_POINT;
+    console.log("meiroPlayer_setStartPoint3");
+    this.pt = new point(point_.x, point_.y);
+    this.his = [];
+    this.his.push({ x: this.pt.x, y: this.pt.y });
+  }
+
+  /**
+   * ゴール地点をセットする
+   * @param {*} point_
+   */
+  setGoalPoint(point_) {
+    //既存のゴールポイントを消去する
+    var pt_ = this.getPointByType(kType.GOAL_POINT);
+    if (pt_ != null) {
+      this.map[pt_.y][pt_.x] = kType.SPACE;
+    }
+    this.map[point_.y][point_.x] = kType.GOAL_POINT;
   }
 
   /**
@@ -77,6 +110,26 @@ class meiroPlayer {
     // console.log("move_meiro x:" + this.pt.x + " y:" + this.pt.y);
     // console.log(this.his);
     this.move_meiro(turn_ - 1);
+  }
+  /**
+   * ゴールまでのルートを生成する
+   * @param {*} turn_
+   */
+  move_meiro_to_goal(point_) {
+    var dcts = this.checkCanDict(this.pt, this.dct);
+    // console.log("move_meiro(turn_)");
+    // console.log(dcts);
+    if (dcts.length) {
+      // console.log(dcts);
+      this.dct = dcts[0].Dict;
+      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.registHis(this.pt);
+      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.registHis(this.pt);
+    }
+    if (this.pt.x != point_.x || this.pt.y != point_.y) {
+      this.move_meiro_to_goal(point_);
+    }
   }
 
   /**
@@ -241,6 +294,13 @@ class meiroPlayer {
    */
   moveHis() {
     return this.his;
+  }
+
+  /**
+   * 経路をリセットする
+   */
+  resetHis() {
+    this.his = [];
   }
 }
 
