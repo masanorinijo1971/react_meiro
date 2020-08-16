@@ -41,8 +41,6 @@ class Play extends Component {
       drawPath: props.drawPath, //ex[[1100],[1001],,,]
       ans: props.ans,
       isLoading: props.isLoading,
-      onInitMeiro: props.onInitMeiro(),
-      onMoveMeiro: props.onMoveMeiro(),
     };
     // this.initMeiro();
     // this.onLoading();
@@ -115,7 +113,7 @@ class Play extends Component {
 
   initMeiro() {
     console.log("play_initMeiro");
-    this.state.onInitMeiro;
+    this.props.onInitMeiro();
   }
 
   createMeiro() {
@@ -264,7 +262,7 @@ const mapDispatchToProps = (dispatch) => ({
   onMoveMeiro: () => {
     console.log("play_onMoveMeiro");
     // dispatch(loadStart());
-    mp.move_meiro(1);
+    mp.move_meiro(10);
     // dispatch(setAnsMeiro({}));
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
@@ -273,10 +271,10 @@ const mapDispatchToProps = (dispatch) => ({
   onAnsMeiro: () => {
     console.log("play_onAnsMeiro");
     // dispatch(loadStart());
-    // var point_ = mp.getPointByType(KabeType.GOAL_POINT);
-    mp.move_meiro_to_goal();
-    // mp.move_meiro_to_goal({ x: 47, y: 63 });
-    // dispatch(setAnsMeiro({}));
+    var type_ = KabeType.GOAL_POINT;
+    // var point_ = mp.getPointByType(type_);
+    // mp.move_meiro_to(point_);
+    mp.calc_max_move(true);
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
     mc.showMap();

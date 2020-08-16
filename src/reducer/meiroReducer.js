@@ -61,11 +61,11 @@ const defaultState = {
   height: 65, //65
   createrCnt: 3, //3
   status: meiroState.init,
-  createStep: 3, //一回あたりの壁生成ステップ数
+  createStep: 20, //一回あたりの壁生成ステップ数
   map: [], //ex[[3333333],[3000003],,,]
   drawPath: [], //ex[[1100],[1001],,,]
   ans: [], //start→goalまでの道のり
-  start: { x: 1, y: 1 },
+  start: { x: 23, y: 31 },
   goal: { x: 47, y: 63 },
 };
 

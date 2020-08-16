@@ -73,6 +73,10 @@ class meiroPlayer {
     this.pt = new point(point_.x, point_.y);
     this.his = [];
     this.his.push({ x: this.pt.x, y: this.pt.y });
+    this.start = {
+      x: point_.x,
+      y: point_.y,
+    };
   }
 
   /**
@@ -101,38 +105,32 @@ class meiroPlayer {
       return;
     }
     var dcts = this.checkCanDict(this.pt, this.dct);
-    // console.log("move_meiro(turn_)");
-    // console.log(dcts);
     if (dcts.length) {
-      // console.log(dcts);
       this.dct = dcts[0].Dict;
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
     }
-    // console.log("move_meiro x:" + this.pt.x + " y:" + this.pt.y);
-    // console.log(this.his);
     this.move_meiro(turn_ - 1);
   }
+
   /**
-   * ゴールまでのルートを生成する
+   * 指定のポイントまでのルートを生成する
    * @param {*} turn_
    */
-  move_meiro_to_goal(point_) {
+  move_meiro_to(point_) {
     var dcts = this.checkCanDict(this.pt, this.dct);
-    // console.log("move_meiro(turn_)");
-    // console.log(dcts);
+    // console.log("move_meiro_to");
     if (dcts.length) {
-      // console.log(dcts);
       this.dct = dcts[0].Dict;
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
     }
     if (this.pt.x != point_.x || this.pt.y != point_.y) {
-      this.move_meiro_to_goal(point_);
+      this.move_meiro_to(point_);
     }
   }
 
@@ -142,6 +140,8 @@ class meiroPlayer {
    */
   calc_max_move(fstFlg_) {
     if (fstFlg_) {
+      console.log("calc_max_move");
+      console.log(this.start);
       this.maxHises = [];
       this.maxHis = [];
       this.maxHisLength = 0;
@@ -149,15 +149,16 @@ class meiroPlayer {
     var dcts = this.checkCanDict(this.pt, this.dct);
     if (dcts.length) {
       this.dct = dcts[0].Dict;
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
-      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.move_point(this.dct, this.map, this.pt, 1);
       this.registHis(this.pt);
       if (this.his.length > this.maxHisLength) {
+        this.maxHisLength = this.his.length;
         this.maxHis = this.his.concat();
       }
     }
-    if (this.pt.x != this.start.x || this.pt.y != this.start.y) {
+    if (this.pt.x == this.start.x && this.pt.y == this.start.y) {
       var duple = false;
       this.maxHises.forEach((his) => {
         if (
@@ -173,10 +174,21 @@ class meiroPlayer {
         this.maxHisLength = 0;
       } else {
         if (this.maxHises.length == 1) {
+          this.setStartPoint(this.start);
           this.setGoalPoint(this.maxHises[0][this.maxHises[0].length - 1]);
+          console.log("duple_1");
+          console.log(this.start);
+          console.log(this.goal);
+          this.move_meiro_to(this.goal);
         } else if (this.maxHises.length > 1) {
+          this.setStartPoint(this.maxHises[1][this.maxHises[1].length - 1]);
           this.setGoalPoint(this.maxHises[0][this.maxHises[0].length - 1]);
-          this.setStartPoint(this.maxHises[0][this.maxHises[1].length - 1]);
+          console.log("duple_2");
+          // console.log(this.maxHises[0]);
+          // console.log(this.maxHises[1]);
+          console.log(this.start);
+          console.log(this.goal);
+          this.move_meiro_to(this.goal);
         }
         return;
       }
@@ -185,11 +197,47 @@ class meiroPlayer {
   }
 
   /**
+   * 指定の方向へ移動のみ。（異動先の状態を変更しない。）
+   * @param {*} dict_ 方向
+   * @param {*} offset_　移動量
+   */
+  move_point(dict_, map_, point_, offset_) {
+    var w_ = map_[0].length;
+    var h_ = map_.length;
+    var x_ = point_.x;
+    var y_ = point_.y;
+    switch (dict_) {
+      case dictType.up:
+        if (0 <= y_ - offset_) {
+          point_.add_y(-offset_);
+        }
+        break;
+      case dictType.right:
+        if (w_ > x_ + offset_) {
+          point_.add_x(offset_);
+        }
+        break;
+      case dictType.down:
+        if (h_ > y_ + offset_) {
+          point_.add_y(offset_);
+        }
+        break;
+      case dictType.left:
+        if (0 <= x_ - offset_) {
+          point_.add_x(-offset_);
+        }
+        break;
+      default:
+        return;
+    }
+  }
+
+  /**
    * 指定の方向へ移動し、異動先の状態を変更する。
    * @param {*} dict_ 方向
    * @param {*} offset_　移動量
    */
-  move_point(dict_, map_, point_, offset_, kType_) {
+  move_point_old(dict_, map_, point_, offset_, kType_) {
     var w_ = map_[0].length;
     var h_ = map_.length;
     var x_ = point_.x;
@@ -304,17 +352,20 @@ class meiroPlayer {
    */
   getPointByType(type_) {
     var point_ = new point(0, 0);
+    var findFlg = false;
     this.map.forEach((mxs, indy) => {
       mxs.forEach((x, indx) => {
-        if (x == type_) {
+        // console.log("x:" + x);
+        // console.log("type_:" + type_);
+        // console.log(x == type_);
+        if (!findFlg && x == type_) {
           point_.set_x(indx);
           point_.set_y(indy);
-          console.log(point_);
-          return point_;
+          findFlg = true;
         }
       });
     });
-    return null;
+    return findFlg ? point_ : null;
   }
 
   /**
@@ -329,9 +380,6 @@ class meiroPlayer {
       this.his[this.his.length - 2].x == point_.x &&
       this.his[this.his.length - 2].y == point_.y
     ) {
-      this.map[this.his[this.his.length - 1].y][
-        this.his[this.his.length - 1].x
-      ] = kType.SPACE;
       this.his.pop();
       this.backFlg = true;
       // console.log("registHis_pop");
