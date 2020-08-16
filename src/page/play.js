@@ -273,7 +273,9 @@ const mapDispatchToProps = (dispatch) => ({
   onAnsMeiro: () => {
     console.log("play_onAnsMeiro");
     // dispatch(loadStart());
-    mp.move_meiro_to_goal({ x: 47, y: 63 });
+    // var point_ = mp.getPointByType(KabeType.GOAL_POINT);
+    mp.move_meiro_to_goal();
+    // mp.move_meiro_to_goal({ x: 47, y: 63 });
     // dispatch(setAnsMeiro({}));
     dispatch(updateMeiro({}));
     dispatch(loadEnd());

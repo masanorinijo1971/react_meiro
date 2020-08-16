@@ -79,6 +79,13 @@ export default class Point {
     return this.y;
   }
 
+  getValue() {
+    return {
+      x: this.x,
+      y: this.y,
+    };
+  }
+
   /**
    * 指定の角度(°）で、反時計回りに回転する
    * @param {*} kaku

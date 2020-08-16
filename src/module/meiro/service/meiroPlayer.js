@@ -86,6 +86,10 @@ class meiroPlayer {
       this.map[pt_.y][pt_.x] = kType.SPACE;
     }
     this.map[point_.y][point_.x] = kType.GOAL_POINT;
+    this.goal = {
+      x: point_.x,
+      y: point_.y,
+    };
   }
 
   /**
@@ -130,6 +134,54 @@ class meiroPlayer {
     if (this.pt.x != point_.x || this.pt.y != point_.y) {
       this.move_meiro_to_goal(point_);
     }
+  }
+
+  /**
+   * 最大の移動量となる経路を算出する
+   * @param {*} turn_
+   */
+  calc_max_move(fstFlg_) {
+    if (fstFlg_) {
+      this.maxHises = [];
+      this.maxHis = [];
+      this.maxHisLength = 0;
+    }
+    var dcts = this.checkCanDict(this.pt, this.dct);
+    if (dcts.length) {
+      this.dct = dcts[0].Dict;
+      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.registHis(this.pt);
+      this.move_point(this.dct, this.map, this.pt, 1, kType.ANS_POINT);
+      this.registHis(this.pt);
+      if (this.his.length > this.maxHisLength) {
+        this.maxHis = this.his.concat();
+      }
+    }
+    if (this.pt.x != this.start.x || this.pt.y != this.start.y) {
+      var duple = false;
+      this.maxHises.forEach((his) => {
+        if (
+          his[his.length - 1].x == this.maxHis[this.maxHis.length - 1].x &&
+          his[his.length - 1].y == this.maxHis[this.maxHis.length - 1].y
+        ) {
+          duple = true;
+        }
+      });
+      if (!duple) {
+        this.maxHises.push(this.maxHis);
+        this.maxHis = [];
+        this.maxHisLength = 0;
+      } else {
+        if (this.maxHises.length == 1) {
+          this.setGoalPoint(this.maxHises[0][this.maxHises[0].length - 1]);
+        } else if (this.maxHises.length > 1) {
+          this.setGoalPoint(this.maxHises[0][this.maxHises[0].length - 1]);
+          this.setStartPoint(this.maxHises[0][this.maxHises[1].length - 1]);
+        }
+        return;
+      }
+    }
+    this.calc_max_move(false);
   }
 
   /**
@@ -257,6 +309,7 @@ class meiroPlayer {
         if (x == type_) {
           point_.set_x(indx);
           point_.set_y(indy);
+          console.log(point_);
           return point_;
         }
       });
