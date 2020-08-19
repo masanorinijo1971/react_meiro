@@ -6,11 +6,13 @@ import { waitAsync } from "../util/waitAsync";
 
 function onLoadStart() {
   console.log("LoadingEffect_onLoadStart");
+  ProgressBar.start();
   // Actions.loading();
 }
 
 function onLoadEnd() {
   console.log("LoadingEffect_onLoadEnd");
+  ProgressBar.stop();
   //Actions.loading();
 }
 

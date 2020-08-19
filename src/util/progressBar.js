@@ -1,101 +1,107 @@
+"use strict";
+
 import React, { Component } from "react";
-import { View, Animated, Dimensions, Easing, Text, Image } from "react-native";
-import baseStyle from "../style/baseStyle";
-class Loading extends Component {
+import { View, Animated, Dimensions, Easing } from "react-native";
+import componentStyles from "../../styles/widgets/ProgressBar";
+
+class ProgressBarComponent extends Component {
   constructor(props) {
-    console.log("Loading_constructor(props)");
     super(props);
     this.state = {
-      deg: new Animated.Value(0),
-      isLoading: true,
-      cnt: 0,
+      isShow: false,
+      progress: new Animated.Value(0.99),
+      blocking: props.blocking || DEFAULT_BLOCKING_MODE,
     };
-    this._rotate();
+    this.windowWidth = Dimensions.get("window").width;
   }
 
   componentDidMount() {
-    console.log("Loading_componentDidMount()");
-    this._rotate();
-    Loading.instance = this;
+    const { global } = this.props;
+    if (global) {
+      ProgressBarComponent.instance = this;
+    }
   }
 
   componentWillUnmount() {
-    console.log("Loading_componentWillUnmount()");
-    delete Loading.instance;
+    const { global } = this.props;
+    if (global) {
+      delete ProgressBarComponent.instance;
+    }
   }
 
-  componentWillReceiveProps(object, nextProps) {
-    console.log("Loading_componentWillReceiveProps(object, nextProps)");
-    this.setState({ isLoading: nextProps.isLoading });
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log("Loading_shouldComponentUpdate");
-
-    return true;
-  }
-
-  start() {
-    console.log("Loading_start()");
+  show(blocking) {
+    const { progress } = this.state;
+    progress.setValue(0.99);
     this.setState({
-      isLoading: true,
-      cnt: 0,
+      isShow: true,
+      blocking,
     });
-    this._rotate();
+    Animated.timing(progress, {
+      easing: Easing.bezier(0.04, 0.9, 0.11, 0.9),
+      duration: ANIMATED_DURATION,
+      toValue: ANIMATION_TO_VALUE,
+    }).start();
   }
 
-  stop() {
-    console.log("Loading_stop()");
-    this.setState({
-      isLoading: false,
-      cnt: 0,
-    });
+  hide() {
+    const { progress } = this.state;
+    Animated.timing(progress, {
+      easing: Easing.inOut(Easing.ease),
+      duration: FAST_ANIMATED_DURATION,
+      toValue: ANIMATION_TO_VALUE,
+    }).start(() =>
+      this.setState({
+        isShow: false,
+        blocking: DEFAULT_BLOCKING_MODE,
+      })
+    );
   }
 
-  _rotate() {
-    console.log("Loading__rotate()");
-    var cnt_ = this.state.cnt + 1;
-    this.setState({
-      cnt: cnt_,
-    });
-    if (this.state.isLoading) {
-      Animated.timing(this.state.deg, {
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(() => {
-        this.setState({ deg: new Animated.Value(0) });
-        this._rotate();
-      });
+  onLayout(event) {
+    if (this.windowWidth !== event.nativeEvent.layout.width) {
+      this.windowWidth = event.nativeEvent.layout.width;
     }
   }
 
   render() {
-    console.log("Loading_render()");
-    var deg_ = this.state.deg.interpolate({
+    const { isShow, blocking } = this.state;
+    const fillWidth = this.state.progress.interpolate({
       inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
+      outputRange: [0 * this.windowWidth, 1 * this.windowWidth],
     });
-    var img = require("../image/map.png");
+
+    if (!isShow) {
+      return null;
+    }
+
     return (
-      <Animated.View style={{ transform: [{ rotate: deg_ }] }}>
-        <Text>cnt:{this.state.cnt}</Text>
-        <Image style={baseStyle.btn} source={img} />
-      </Animated.View>
+      <View
+        style={componentStyles.background}
+        onLayout={(event) => this.onLayout(event)}
+      >
+        {isShow && blocking && <View style={componentStyles.overlay} />}
+        <Animated.View
+          style={[componentStyles.fill, { marginRight: fillWidth }]}
+        />
+      </View>
     );
   }
 }
 
+const ANIMATED_DURATION = 12000;
+const FAST_ANIMATED_DURATION = 300;
+const ANIMATION_TO_VALUE = 0;
+const DEFAULT_BLOCKING_MODE = true;
+
 const ProgressBar = {
-  Component: Loading,
-  start() {
-    const { instance } = Loading;
-    instance && instance.start();
+  Component: ProgressBarComponent,
+  start(blocking = DEFAULT_BLOCKING_MODE) {
+    const { instance } = ProgressBarComponent;
+    instance && instance.show(blocking);
   },
   stop() {
-    const { instance } = Loading;
-    instance && instance.stop();
+    const { instance } = ProgressBarComponent;
+    instance && instance.hide();
   },
 };
 

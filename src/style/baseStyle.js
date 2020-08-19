@@ -65,11 +65,34 @@ export default StyleSheet.create({
     width: 280,
     height: 120,
   },
-  loading: {
+  loading_xx: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#225f6d",
+  },
+  background: {
+    backgroundColor: "#88888844",
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    flex: 1,
+  },
+  loadingBackground: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    flex: 1,
+  },
+  loading: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 180,
+    width: 180,
+    position: "absolute",
+    flex: 1,
   },
 });

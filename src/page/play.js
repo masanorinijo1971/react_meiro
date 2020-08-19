@@ -8,6 +8,7 @@ import GestureRecognizer, {
   swipeDirections,
 } from "react-native-swipe-gestures";
 import MeiroMap from "../module/meiro/component/MeiroMap";
+import BasePage from "./hoc/BasePage";
 import { loading } from "../util/LoadingEffect";
 import Ld from "../element/loading";
 import {
@@ -162,52 +163,12 @@ class Play extends Component {
   render() {
     console.log("play_render()");
     // const isLoading = this.state.isLoading;
-
     const { isLoading } = this.state;
     return (
-      <View style={baseStyle.play}>
-        {isLoading ? (
-          <View style={baseStyle.play2}>
-            {/* <Ld></Ld> */}
-            <TouchableOpacity onPress={this.backHome}>
-              <Image
-                style={baseStyle.btn}
-                source={require("../image/modoru_btn.png")}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.createMeiro.bind(this)}>
-              <Image
-                style={baseStyle.btn}
-                source={require("../image/modoru_btn.png")}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={this.createMeiroAll.bind(this)}>
-              <Image
-                style={baseStyle.btn}
-                source={require("../image/modoru_btn.png")}
-              />
-            </TouchableOpacity>
-          </View>
-        ) : (
+      <BasePage winWidth={this.state.winWidth} winHeight={this.state.winHeight}>
+        <View style={baseStyle.play}>
           <View>
             <Text>{this.state.gestureName}</Text>
-            {/* <Text style={{ backgroundColor: this.state.backgroundColor }}>
-              {" width:" +
-                Math.floor(this.state.winWidth) +
-                "height:" +
-                Math.floor(this.state.winHeight)}
-            </Text> */}
-            {/* <GestureRecognizer
-              onSwipe={(direction, state) => this.onSwipe(direction, state)}
-              // onSwipeUp={this.createMeiro.bind(this)}
-              // onSwipeLeft={this.createMeiro.bind(this)}
-              // onSwipeRight={this.createMeiro.bind(this)}
-              // onSwipeDown={this.createMeiro.bind(this)}
-              config={{
-                velocityThreshold: 0.1,
-                directionalOffsetThreshold: 30,
-              }}
-            > */}
             <Surface
               width={this.state.winWidth - 30}
               height={this.state.winHeight - 200}
@@ -220,7 +181,6 @@ class Play extends Component {
                 color={"#ffffff"}
               />
             </Surface>
-            {/* </GestureRecognizer> */}
 
             <View style={baseStyle.play2}>
               <TouchableOpacity onPress={this.backHome}>
@@ -243,8 +203,8 @@ class Play extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        )}
-      </View>
+        </View>
+      </BasePage>
     );
   }
 }
