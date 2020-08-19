@@ -3,12 +3,6 @@ import { View, StatusBar, Dimensions } from "react-native";
 import LoadingView from "../../element/LoadingView";
 import PropTypes from "prop-types";
 import Modal from "../../element/Modal";
-import Header from "common/containers/layout/Header";
-import { isDevMode } from "../utils/environment";
-import {
-  DEFAULT_DESIGN_HEIGHT,
-  DEFAULT_DESIGN_WIDTH,
-} from "../components/ComponentDefinitions";
 
 export default class BasePage extends Component {
   static propTypes = {

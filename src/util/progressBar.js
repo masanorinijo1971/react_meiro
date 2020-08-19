@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { View, Animated, Dimensions, Easing } from "react-native";
-import componentStyles from "../../styles/widgets/ProgressBar";
+import componentStyles from "../style/progressBarStyle";
 
 class ProgressBarComponent extends Component {
   constructor(props) {

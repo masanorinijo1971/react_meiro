@@ -10,7 +10,7 @@ export const loadEnd = createAction("loading_end");
 
 const defaultState = {
   winWidth: 100,
-  winHeight: 200,
+  winHeight: 500,
   gameStart: false,
   gameEnd: false,
   loading: true,

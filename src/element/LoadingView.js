@@ -5,12 +5,12 @@ import componentStyles from "../style/baseStyle";
 
 class LoadingView extends Component {
   render() {
-    return !this.props.isLoading ? null : (
+    return this.props.isLoading ? null : (
       <View style={componentStyles.background}>
         <View style={componentStyles.loadingBackground}>
           <Image
             style={componentStyles.loading}
-            source={require("../image/loading")}
+            source={require("../image/loading.gif")}
           />
         </View>
       </View>

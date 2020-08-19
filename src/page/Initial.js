@@ -42,6 +42,8 @@ class Initial extends Component {
 const mapDispatchToProps = (dispatch) => ({
   onInit: () => {
     var size = getWinsize();
+    console.log("onInit");
+    console.log(size.x);
     dispatch(
       setWinSize({
         winWidth: size.x,

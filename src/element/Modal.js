@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, TouchableWithoutFeedback, Dimensions } from "react-native";
-import { DEFAULT_DESIGN_WIDTH } from "../ComponentDefinitions";
 
 /**
  * @typedef {Object} ModalOptions
@@ -64,9 +63,8 @@ export class ModalManager {
       }
 
       // 画面サイズに合わせてスケール (defaultWidthの幅前提でデザインされているため)
-      const defaultWidth = DEFAULT_DESIGN_WIDTH;
       const windowSize = Dimensions.get("window");
-      const scale = windowSize.width / defaultWidth;
+      const scale = windowSize.width;
 
       px /= scale;
       py /= scale;
