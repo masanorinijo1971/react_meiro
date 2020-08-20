@@ -19,6 +19,7 @@ import {
   createMeiroAll,
 } from "../reducer/meiroReducer";
 import { loadEnd, loadStart } from "../reducer/commonReducer";
+import { defaultState as meiroDef } from "../reducer/meiroReducer";
 import mc from "../module/meiro/service/meiroCreater";
 import mp from "../module/meiro/service/meiroPlayer";
 import { KabeType } from "../module/meiro/service/meiroTypes";
@@ -165,48 +166,47 @@ class Play extends Component {
     // const isLoading = this.state.isLoading;
     const { isLoading } = this.state;
     return (
-      <BasePage winWidth={this.state.winWidth} winHeight={this.state.winHeight}>
+      <BasePage>
         <View style={baseStyle.play}>
-          <View>
-            <Text>{this.state.gestureName}</Text>
-            <Surface
-              width={this.state.winWidth - 30}
-              height={this.state.winHeight - 200}
-            >
-              <MeiroMap
-                drawPath={this.state.drawPath}
-                playPath={this.state.ans}
-                width={2}
-                length={12}
-                color={"#ffffff"}
+          <Text>{"x:" + this.state.width + " y:" + this.state.height}</Text>
+          <Surface
+            width={this.state.winWidth - 30}
+            height={this.state.winHeight - 200}
+          >
+            <MeiroMap
+              style={baseStyle.play}
+              drawPath={this.state.drawPath}
+              playPath={this.state.ans}
+              width={2}
+              length={12}
+              color={"#ffffff"}
+            />
+          </Surface>
+          <View style={baseStyle.play2}>
+            <TouchableOpacity onPress={this.backHome}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/modoru_btn.png")}
               />
-            </Surface>
-            <View style={baseStyle.play2}>
-              <TouchableOpacity onPress={this.backHome}>
-                <Image
-                  style={baseStyle.btn}
-                  source={require("../image/modoru_btn.png")}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.initMeiro.bind(this)}>
-                <Image
-                  style={baseStyle.btn}
-                  source={require("../image/modoru_btn.png")}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.moveMeiro.bind(this)}>
-                <Image
-                  style={baseStyle.btn}
-                  source={require("../image/modoru_btn.png")}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.ansMeiro.bind(this)}>
-                <Image
-                  style={baseStyle.btn}
-                  source={require("../image/modoru_btn.png")}
-                />
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.initMeiro.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/modoru_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.moveMeiro.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/modoru_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.ansMeiro.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/modoru_btn.png")}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </BasePage>
@@ -215,51 +215,51 @@ class Play extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onInitMeiro: () => {
+  onInitMeiro: (meiro) => {
     console.log("play_onInitMeiro!!!");
     loading(
       dispatch,
       () => {
         var process = new Promise((resolve, reject) => {
           try {
-            waitAsync(100000);
-            var w_ = 49;
-            var h_ = 65;
-            var c_ = 3;
-            var st_ = 20;
+            // waitAsync(100000);
+            var w_ = meiro.width || meiroDef.width;
+            var h_ = meiro.height || meiroDef.height;
+            var c_ = meiro.createrCnt || meiroDef.createrCnt;
+            var st_ = meiro.createStep || meiroDef.createStep;
+            console.log("meiro");
+            // console.log(meiro);
+            // var w_ = 49;
+            // var h_ = 65;
+            // var c_ = 3;
+            // var st_ = 20;
             mc.init(w_, h_, c_);
             mp.resetHis();
             while (!mc.moveCreater(st_));
             mc.showMap();
             mp.set_map(mc.getMap());
             mp.resetHis();
-            mp.setStartPoint({ x: 1, y: 1 });
-            mp.setGoalPoint({ x: 47, y: 63 });
-            // dispatch(initMeiro({}));
-            // dispatch(createMeiroAll({}));
+            mp.setStartPoint(meiro.start);
+            mp.setGoalPoint(meiro.goal); // dispatch(initMeiro({}));            // dispatch(createMeiroAll({}));
             // dispatch(setStGlMeiro({}));
           } catch (err) {
+            console.log(err);
             reject(err);
           } finally {
+            console.log("OK");
             resolve("OK");
           }
+        }).then((result) => {
+          dispatch(updateMeiro({}));
+          console.log(result + "play_onInitMeiro_finProsess");
         });
         return process;
       },
       () => {
-        dispatch(updateMeiro({}));
-        console.log("play_onInitMeiro_finProsess");
+        // dispatch(updateMeiro({}));
+        // console.log("play_onInitMeiro_finProsess");
       }
     );
-  },
-  onInitMeiro_xx: () => {
-    console.log("onInitMeiro:");
-    dispatch(loadStart());
-    dispatch(initMeiro({}));
-    dispatch(createMeiroAll({}));
-    dispatch(setStGlMeiro({}));
-    // dispatch(updateMeiro({}));
-    dispatch(loadEnd());
   },
   onMoveMeiro: () => {
     console.log("play_onMoveMeiro");
@@ -270,12 +270,35 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(loadEnd());
     mc.showMap();
   },
-  onAnsMeiro: () => {
+  onAnsMeiro_xx: () => {
     console.log("play_onAnsMeiro");
-    // dispatch(loadStart());
+    loading(
+      dispatch,
+      () => {
+        var process = new Promise((resolve, reject) => {
+          try {
+            mp.calc_max_move(true);
+            dispatch(updateMeiro({}));
+          } catch (err) {
+            console.log(err);
+            reject(err);
+          } finally {
+            console.log("OK");
+            resolve("OK");
+          }
+        }).then((result) => {
+          dispatch(loadEnd());
+        });
+        return process;
+      },
+      () => {}
+    );
+  },
+  onAnsMeiro: () => {
+    dispatch(loadStart());
     var type_ = KabeType.GOAL_POINT;
-    // var point_ = mp.getPointByType(type_);
-    // mp.move_meiro_to(point_);
+    var point_ = mp.getPointByType(type_);
+    mp.move_meiro_to(point_);
     mp.calc_max_move(true);
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
@@ -324,6 +347,7 @@ const mapStateToProps = (state) => ({
   width: state.meiro.width,
   height: state.meiro.height,
   createrCnt: state.meiro.createrCnt,
+  meiro: state.meiro,
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -331,11 +355,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    onInitMeiro: () => {
-      dispatchProps.onInitMeiro(stateProps);
+    onInitMeiro: async () => {
+      // console.log(stateProps.meiro);
+      dispatchProps.onInitMeiro(stateProps.meiro);
     },
     onMoveMeiro: () => {
-      dispatchProps.onMoveMeiro();
+      dispatchProps.onMoveMeiro(stateProps.meiro);
     },
     onLoading_promise: () => {
       console.log("play_onLoading");
@@ -362,4 +387,4 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Play);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Play);

@@ -55,7 +55,7 @@ export const meiroState = {
   meiroGoal: 5,
 };
 
-const defaultState = {
+export const defaultState = {
   // meiroCreater: new meiroCreater(31, 31, 2),
   width: 49, //49
   height: 65, //65
