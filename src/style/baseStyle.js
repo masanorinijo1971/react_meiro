@@ -33,6 +33,14 @@ export default StyleSheet.create({
     backgroundColor: "#225f6d",
     color: "#000000",
   },
+  base: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#225f6d",
+    color: "#000000",
+  },
   play: {
     flex: 1,
     flexDirection: "column",

@@ -13,7 +13,7 @@ const defaultState = {
   winHeight: 500,
   gameStart: false,
   gameEnd: false,
-  loading: true,
+  loading: false,
 };
 
 const handlers = {

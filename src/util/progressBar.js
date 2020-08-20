@@ -16,10 +16,10 @@ class ProgressBarComponent extends Component {
   }
 
   componentDidMount() {
-    const { global } = this.props;
-    if (global) {
-      ProgressBarComponent.instance = this;
-    }
+    // const { global } = this.props;
+    // if (global) {
+    ProgressBarComponent.instance = this;
+    // }
   }
 
   componentWillUnmount() {

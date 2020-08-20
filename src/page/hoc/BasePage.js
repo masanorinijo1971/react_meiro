@@ -3,7 +3,7 @@ import { View, StatusBar, Dimensions } from "react-native";
 import LoadingView from "../../element/LoadingView";
 import PropTypes from "prop-types";
 import Modal from "../../element/Modal";
-
+import baseStyle from "../../style/baseStyle";
 export default class BasePage extends Component {
   static propTypes = {
     showHeader: PropTypes.bool,
@@ -31,7 +31,7 @@ export default class BasePage extends Component {
             style={{ flexDirection: "row", alignItems: "stretch", flex: 1 }}
           >
             <View style={{ flex: 1 }}>{this.props.children[0]}</View>
-            <View style={{ width: 1, backgroundColor: "#979797" }} />
+            <View style={{ width: 1, backgroundColor: "#ff9797" }} />
             <View style={{ flex: 1 }}>{this.props.children[1]}</View>
           </View>
         );
@@ -50,21 +50,23 @@ export default class BasePage extends Component {
     const scale = windowSize.width / defaultWidth;
 
     return (
-      <View style={{ width: defaultWidth, height: defaultHeight }}>
-        <StatusBar barStyle="light-content" />
-        <View
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            alignItems: "stretch",
-          }}
-        >
-          <View style={{ flex: 1 }}>{this._renderChildren()}</View>
-        </View>
+      <View style={baseStyle.play}>
+        {/* <View> */}
+        {/* <StatusBar barStyle="light-content" /> */}
+        {/* <View
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              alignItems: "stretch",
+            }}
+          > */}
+        {/* </View> */}
+        {this._renderChildren()}
         <Modal />
         <LoadingView />
       </View>
+      // </View>
     );
   }
 }

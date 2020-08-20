@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import commonReducer from "./reducer/commonReducer";
 import meiroReducer from "./reducer/meiroReducer";
 import createSagaMiddleware from "redux-saga";
-import createSaga from "./util/LoadingEffect";
+import createSaga from "./util/sideEffects";
 
 const createMiddlewares = (sagaMiddleware) => {
   const middlewares = [];

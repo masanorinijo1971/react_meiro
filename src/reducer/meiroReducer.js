@@ -65,7 +65,7 @@ const defaultState = {
   map: [], //ex[[3333333],[3000003],,,]
   drawPath: [], //ex[[1100],[1001],,,]
   ans: [], //start→goalまでの道のり
-  start: { x: 23, y: 31 },
+  start: { x: 1, y: 1 },
   goal: { x: 47, y: 63 },
 };
 

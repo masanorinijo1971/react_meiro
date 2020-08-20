@@ -3,6 +3,7 @@ import SensitiveInfo from "react-native-sensitive-info";
 import { takeEvery, all, select } from "redux-saga/effects";
 import ProgressBar from "./progressBar";
 import { loadStart, loadEnd } from "../reducer/commonReducer";
+import waitAsync from "../util/waitAsync";
 
 function onLoadStart() {
   console.log("ProgressBar.show();");
@@ -47,12 +48,12 @@ export async function loading_await(dispatch, fetchingProcess) {
  * @param {*} anyProcess　何かの処理
  * @param {*} finProcess　終了後の処理
  */
-export function loading(dispatch, anyProcess, finProcess) {
+export async function loading(dispatch, anyProcess, finProcess) {
   dispatch(loadStart());
   try {
-    const ret = anyProcess();
-    dispatch(loadEnd());
+    const ret = await anyProcess();
     finProcess();
+    dispatch(loadEnd());
     return ret;
   } catch (error) {
     dispatch(loadEnd());

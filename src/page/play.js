@@ -9,7 +9,6 @@ import GestureRecognizer, {
 } from "react-native-swipe-gestures";
 import MeiroMap from "../module/meiro/component/MeiroMap";
 import BasePage from "./hoc/BasePage";
-import { loading } from "../util/LoadingEffect";
 import Ld from "../element/loading";
 import {
   initMeiro,
@@ -25,6 +24,7 @@ import mp from "../module/meiro/service/meiroPlayer";
 import { KabeType } from "../module/meiro/service/meiroTypes";
 import { waitAsync } from "../util/waitAsync";
 import Point from "../util/point";
+import { loading } from "../util/sideEffects";
 class Play extends Component {
   // var className="Play"
   constructor(props) {
@@ -181,9 +181,14 @@ class Play extends Component {
                 color={"#ffffff"}
               />
             </Surface>
-
             <View style={baseStyle.play2}>
               <TouchableOpacity onPress={this.backHome}>
+                <Image
+                  style={baseStyle.btn}
+                  source={require("../image/modoru_btn.png")}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.initMeiro.bind(this)}>
                 <Image
                   style={baseStyle.btn}
                   source={require("../image/modoru_btn.png")}
@@ -211,6 +216,43 @@ class Play extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   onInitMeiro: () => {
+    console.log("play_onInitMeiro!!!");
+    loading(
+      dispatch,
+      () => {
+        var process = new Promise((resolve, reject) => {
+          try {
+            waitAsync(100000);
+            var w_ = 49;
+            var h_ = 65;
+            var c_ = 3;
+            var st_ = 20;
+            mc.init(w_, h_, c_);
+            mp.resetHis();
+            while (!mc.moveCreater(st_));
+            mc.showMap();
+            mp.set_map(mc.getMap());
+            mp.resetHis();
+            mp.setStartPoint({ x: 1, y: 1 });
+            mp.setGoalPoint({ x: 47, y: 63 });
+            // dispatch(initMeiro({}));
+            // dispatch(createMeiroAll({}));
+            // dispatch(setStGlMeiro({}));
+          } catch (err) {
+            reject(err);
+          } finally {
+            resolve("OK");
+          }
+        });
+        return process;
+      },
+      () => {
+        dispatch(updateMeiro({}));
+        console.log("play_onInitMeiro_finProsess");
+      }
+    );
+  },
+  onInitMeiro_xx: () => {
     console.log("onInitMeiro:");
     dispatch(loadStart());
     dispatch(initMeiro({}));
