@@ -1,6 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import commonReducer from "./reducer/commonReducer";
 import meiroReducer from "./reducer/meiroReducer";
+import spriteReducer from "./reducer/spriteReducer";
 import createSagaMiddleware from "redux-saga";
 import createSaga from "./util/sideEffects";
 
@@ -16,6 +17,7 @@ const createReducers = (reducers) => {
   return combineReducers({
     common: commonReducer,
     meiro: meiroReducer,
+    sprite: spriteReducer,
     ...reducers,
   });
 };

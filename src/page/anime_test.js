@@ -21,6 +21,7 @@ export default class AnimeTest extends Component {
       whiteDegree: new Animated.Value(0),
       yellowScale: new Animated.Value(1),
       backgroundColor: new Animated.Value(0),
+      isMove: false,
     };
   }
 
@@ -35,48 +36,30 @@ export default class AnimeTest extends Component {
     this._changeBackgroundColor();
   }
 
-  _changeBackgroundColor() {
-    this.state.backgroundColor.setValue(0);
-    this.state.whiteDegree.setValue(0);
-
-    Animated.sequence([
+  _onActionPlay() {
+    if (!this.state.isMove) {
+      this.setState({
+        isMove: true,
+      });
       Animated.parallel([
-        Animated.timing(this.state.backgroundColor, {
-          toValue: 300,
-          duration: 20000,
+        Animated.timing(this.state.x, {
+          toValue: this.props.x,
+          duration: 1000,
         }),
-        Animated.timing(this.state.whiteDegree, {
-          toValue: 1,
-          duration: 20000,
+        Animated.timing(this.state.y, {
+          toValue: this.props.y,
+          duration: 1000,
         }),
-      ]),
-      Animated.parallel([
-        Animated.timing(this.state.backgroundColor, {
-          toValue: 0,
-          duration: 20000,
+        Animated.timing(this.state.rot, {
+          toValue: this.props.rot,
+          duration: 1000,
         }),
-        Animated.timing(this.state.whiteDegree, {
-          toValue: 0,
-          duration: 20000,
+        Animated.timing(this.state.scale, {
+          toValue: this.props.scale,
+          duration: 1000,
         }),
-      ]),
-    ]).start(this._changeBackgroundColor.bind(this));
-  }
-
-  _onPressGreen() {
-    LayoutAnimation.spring();
-    this.setState({ greenWidth: this.state.greenWidth + 20 });
-  }
-
-  _onPressYellow() {
-    Animated.spring(this.state.yellowScale, {
-      toValue: this._yellowScale - 0.1,
-      friction: 1,
-    }).start();
-  }
-
-  backHome() {
-    Actions.home();
+      ]).start(this.setState({ isMove: false }));
+    }
   }
 
   render() {

@@ -18,6 +18,7 @@ import {
   createMeiro,
   createMeiroAll,
 } from "../reducer/meiroReducer";
+import { playAction } from "../reducer/spriteReducer";
 import { loadEnd, loadStart } from "../reducer/commonReducer";
 import { defaultState as meiroDef } from "../reducer/meiroReducer";
 import mc from "../module/meiro/service/meiroCreater";
@@ -26,6 +27,7 @@ import { KabeType } from "../module/meiro/service/meiroTypes";
 import { waitAsync } from "../util/waitAsync";
 import Point from "../util/point";
 import { loading } from "../util/sideEffects";
+import Sprite from "../module/splite/component/sprite";
 class Play extends Component {
   // var className="Play"
   constructor(props) {
@@ -161,6 +163,11 @@ class Play extends Component {
         break;
     }
   }
+
+  _onSpriteAction() {
+    this.props.onSpliteMove();
+  }
+
   render() {
     console.log("play_render()");
     // const isLoading = this.state.isLoading;
@@ -182,6 +189,7 @@ class Play extends Component {
               color={"#ffffff"}
             />
           </Surface>
+          <Sprite></Sprite>
           <View style={baseStyle.play2}>
             <TouchableOpacity onPress={this.backHome}>
               <Image
@@ -202,6 +210,12 @@ class Play extends Component {
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={this.ansMeiro.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/modoru_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._onSpriteAction.bind(this)}>
               <Image
                 style={baseStyle.btn}
                 source={require("../image/modoru_btn.png")}
@@ -334,6 +348,9 @@ const mapDispatchToProps = (dispatch) => ({
     console.log("result:" + result);
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
+  },
+  onSpliteMove: () => {
+    dispatch(playAction({ x: 500, y: 600, scale: 1.5, rot: 1 }));
   },
 });
 
