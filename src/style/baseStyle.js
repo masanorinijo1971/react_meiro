@@ -58,8 +58,8 @@ export default StyleSheet.create({
     color: "#000000",
   },
   btn: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
   },
   btn_long: {
     width: 200,

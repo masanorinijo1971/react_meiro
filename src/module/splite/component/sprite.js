@@ -8,10 +8,10 @@ class Sprite extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: new Animated.Value(0),
-      y: new Animated.Value(0),
+      x: new Animated.Value(50),
+      y: new Animated.Value(100),
       rot: new Animated.Value(0),
-      scale: new Animated.Value(0),
+      scale: new Animated.Value(0.2),
       isMoving: false,
     };
   }
@@ -33,50 +33,50 @@ class Sprite extends Component {
   }
 
   _actionPlay(nextProps) {
-    if (!this.isMoving) {
-      this.setState({ isMoving: true });
-      Animated.parallel([
-        Animated.timing(this.state.x, {
-          toValue: nextProps.x,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(this.state.y, {
-          toValue: nextProps.y,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(this.state.rot, {
-          toValue: nextProps.rot,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(this.state.scale, {
-          toValue: nextProps.scale,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      ]).start(this.setState({ isMoving: false }));
-    }
+    // if (!this.isMoving) {
+    this.setState({ isMoving: true });
+    Animated.parallel([
+      Animated.timing(this.state.x, {
+        toValue: nextProps.x,
+        duration: 1000,
+        easing: Easing.linear,
+      }),
+      Animated.timing(this.state.y, {
+        toValue: nextProps.y,
+        duration: 1000,
+        easing: Easing.linear,
+      }),
+      Animated.timing(this.state.rot, {
+        toValue: nextProps.rot,
+        duration: 1000,
+        easing: Easing.linear,
+      }),
+      Animated.timing(this.state.scale, {
+        toValue: nextProps.scale,
+        duration: 1000,
+        easing: Easing.linear,
+      }),
+    ]).start(this.setState({ isMoving: false }));
+    // }
   }
 
   render() {
     var { x, y, rot, scale } = this.state;
+    var deg_ = rot.interpolate({
+      inputRange: [0, 4],
+      outputRange: ["0deg", "360deg"],
+    });
+    var img = require("../../../image/map.png");
     return (
-      <Animated.View
+      <Animated.Image
         style={{
           position: "absolute",
           left: x,
           top: y,
-          transform: [{ scale: scale, rotate: rot }],
+          transform: [{ scale: scale }, { rotate: deg_ }],
         }}
-      >
-        <Image source={require("../../../image/map.png")} />
-      </Animated.View>
+        source={img}
+      />
     );
   }
 }

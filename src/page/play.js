@@ -18,7 +18,7 @@ import {
   createMeiro,
   createMeiroAll,
 } from "../reducer/meiroReducer";
-import { playAction } from "../reducer/spriteReducer";
+import { ActionBy, ActionTo } from "../reducer/spriteReducer";
 import { loadEnd, loadStart } from "../reducer/commonReducer";
 import { defaultState as meiroDef } from "../reducer/meiroReducer";
 import mc from "../module/meiro/service/meiroCreater";
@@ -64,6 +64,7 @@ class Play extends Component {
   componentDidMount() {
     console.log("play_componentDidMount()");
     this.initMeiro();
+    this.props.onSpliteInit();
   }
 
   onLoading() {
@@ -164,8 +165,24 @@ class Play extends Component {
     }
   }
 
-  _onSpriteAction() {
-    this.props.onSpliteMove();
+  _onSpriteInit() {
+    this.props.onSpliteInit();
+  }
+
+  _onMoveLeft() {
+    this.props.onMoveLeft();
+  }
+
+  _onMoveRight() {
+    this.props.onMoveRight();
+  }
+
+  _onMoveUp() {
+    this.props.onMoveUp();
+  }
+
+  _onMoveDown() {
+    this.props.onMoveDown();
   }
 
   render() {
@@ -215,10 +232,30 @@ class Play extends Component {
                 source={require("../image/modoru_btn.png")}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={this._onSpriteAction.bind(this)}>
+          </View>
+          <View style={baseStyle.play2}>
+            <TouchableOpacity onPress={this._onMoveRight.bind(this)}>
               <Image
                 style={baseStyle.btn}
-                source={require("../image/modoru_btn.png")}
+                source={require("../image/howto_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._onMoveLeft.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/howto_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._onMoveUp.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/howto_btn.png")}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this._onMoveDown.bind(this)}>
+              <Image
+                style={baseStyle.btn}
+                source={require("../image/howto_btn.png")}
               />
             </TouchableOpacity>
           </View>
@@ -349,8 +386,20 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
   },
-  onSpliteMove: () => {
-    dispatch(playAction({ x: 500, y: 600, scale: 1.5, rot: 1 }));
+  onSpliteInit: () => {
+    dispatch(ActionTo({ x: 10, y: 10, scale: 0.5, rot: 0 }));
+  },
+  onMoveLeft: () => {
+    dispatch(ActionBy({ x: 5, y: 0, scale: 0, rot: 0 }));
+  },
+  onMoveRight: () => {
+    dispatch(ActionBy({ x: -5, y: 0, scale: 0, rot: 0 }));
+  },
+  onMoveUp: () => {
+    dispatch(ActionBy({ x: 0, y: -5, scale: 0, rot: 0 }));
+  },
+  onMoveDown: () => {
+    dispatch(ActionBy({ x: 0, y: 5, scale: 0, rot: 0 }));
   },
 });
 
