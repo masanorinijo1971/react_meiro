@@ -8,11 +8,14 @@ class Sprite extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: new Animated.Value(50),
-      y: new Animated.Value(100),
+      x: new Animated.Value(10),
+      y: new Animated.Value(10),
       rot: new Animated.Value(0),
-      scale: new Animated.Value(0.2),
+      scale: new Animated.Value(0.3),
       isMoving: false,
+      offset: props.offset,
+      drawWidth: props.drawWidth, //描写幅
+      drawLength: props.drawLength, //ブロック長さ
     };
   }
 
@@ -22,14 +25,48 @@ class Sprite extends Component {
 
   componentWillReceiveProps(nextProps) {
     // Propsの変更をstateに反映する場合はここに記述
-    this._actionPlay(nextProps);
+    // this._actionPlay(nextProps);
+    if (nextProps.his) {
+      this._madeAnimesByHis(nextProps.his);
+    }
     console.log("splite_componentWillReceiveProps");
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("splite_shouldComponentUpdate");
-
     return true;
+  }
+
+  _madeAnimesByHis(his) {
+    if (!his.length) {
+      return;
+    }
+    var animes = [];
+    his.forEach((pt) => {
+      // console.log(pt);
+      // x += pt.x * 1;
+      // y += pt.y * 1;
+      var anime = [];
+      anime.push(
+        Animated.timing(this.state.x, {
+          toValue: (pt.x * this.state.drawLength) / 2 + this.state.offset.x,
+          duration: 100,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        })
+      );
+      anime.push(
+        Animated.timing(this.state.y, {
+          toValue: (pt.y * this.state.drawLength) / 2 + this.state.offset.y,
+          duration: 100,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        })
+      );
+      animes.push(Animated.parallel(anime));
+    });
+    // console.log(animes);
+    Animated.sequence(animes).start(this.setState({ isMoving: false }));
   }
 
   _actionPlay(nextProps) {
@@ -66,7 +103,7 @@ class Sprite extends Component {
       inputRange: [0, 4],
       outputRange: ["0deg", "360deg"],
     });
-    var img = require("../../../image/map.png");
+    var img = require("../../../image/ball.png");
     return (
       <Animated.Image
         style={{
@@ -94,6 +131,11 @@ const mapStateToProps = (state) => ({
   y: state.sprite.y,
   rot: state.sprite.rot,
   scale: state.sprite.scale,
+  step: state.sprite.step,
+  his: state.meiro.ans,
+  offset: state.meiro.offset,
+  drawWidth: state.meiro.drawWidth, //描写幅
+  drawLength: state.meiro.drawLength, //ブロック長さ
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

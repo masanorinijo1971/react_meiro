@@ -28,6 +28,7 @@ import { waitAsync } from "../util/waitAsync";
 import Point from "../util/point";
 import { loading } from "../util/sideEffects";
 import Sprite from "../module/splite/component/sprite";
+import { MENU_HEIGHT } from "../module/common/const";
 class Play extends Component {
   // var className="Play"
   constructor(props) {
@@ -42,9 +43,12 @@ class Play extends Component {
       height: props.height,
       createrCnt: props.createrCnt,
       map: props.map, //ex[[3333333],[3000003],,,]
+      drawWidth: props.drawWidth,
+      drawLength: props.drawLength,
       drawPath: props.drawPath, //ex[[1100],[1001],,,]
       ans: props.ans,
       isLoading: props.isLoading,
+      offset: props.offset || { x: 10, y: 10 },
     };
     // this.initMeiro();
     // this.onLoading();
@@ -64,7 +68,7 @@ class Play extends Component {
   componentDidMount() {
     console.log("play_componentDidMount()");
     this.initMeiro();
-    this.props.onSpliteInit();
+    this.props.onSpriteInit();
   }
 
   onLoading() {
@@ -78,6 +82,7 @@ class Play extends Component {
       drawPath: nextProps.drawPath, //ex[[1100],[1001],,,]
       ans: nextProps.ans,
       isLoading: nextProps.isLoading,
+      offset: nextProps.offset,
     };
   }
 
@@ -88,6 +93,7 @@ class Play extends Component {
       drawPath: nextProps.drawPath, //ex[[1100],[1001],,,]
       ans: nextProps.ans,
       isLoading: nextProps.isLoading,
+      offset: nextProps.offset,
     });
     console.log("play_componentWillReceiveProps");
   }
@@ -118,6 +124,7 @@ class Play extends Component {
 
   initMeiro() {
     console.log("play_initMeiro");
+    this.props.onSetOffset();
     this.props.onInitMeiro();
   }
 
@@ -166,7 +173,7 @@ class Play extends Component {
   }
 
   _onSpriteInit() {
-    this.props.onSpliteInit();
+    this.props.onSpriteInit();
   }
 
   _onMoveLeft() {
@@ -194,19 +201,20 @@ class Play extends Component {
         <View style={baseStyle.play}>
           <Text>{"x:" + this.state.width + " y:" + this.state.height}</Text>
           <Surface
-            width={this.state.winWidth - 30}
-            height={this.state.winHeight - 200}
+            width={this.state.winWidth}
+            height={this.state.winHeight - MENU_HEIGHT}
           >
             <MeiroMap
               style={baseStyle.play}
               drawPath={this.state.drawPath}
               playPath={this.state.ans}
-              width={2}
-              length={12}
+              width={this.state.drawWidth}
+              length={this.state.drawLength}
               color={"#ffffff"}
+              offset={this.state.offset}
             />
           </Surface>
-          <Sprite></Sprite>
+          <Sprite />
           <View style={baseStyle.play2}>
             <TouchableOpacity onPress={this.backHome}>
               <Image
@@ -266,6 +274,20 @@ class Play extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  onSetOffset: (props) => {
+    var off_x =
+      props.winWidth / 2 -
+      ((props.width - 1) / 4) * props.drawLength -
+      props.drawWidth;
+    var off_y =
+      (props.winHeight - MENU_HEIGHT) / 2 -
+      ((props.height - 1) / 4) * props.drawLength -
+      props.drawWidth;
+    var offset_ = { x: off_x, y: off_y };
+    console.log("meiro_offset");
+    console.log(offset_);
+    dispatch(updateMeiro({ offset: offset_ }));
+  },
   onInitMeiro: (meiro) => {
     console.log("play_onInitMeiro!!!");
     loading(
@@ -321,30 +343,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(loadEnd());
     mc.showMap();
   },
-  onAnsMeiro_xx: () => {
-    console.log("play_onAnsMeiro");
-    loading(
-      dispatch,
-      () => {
-        var process = new Promise((resolve, reject) => {
-          try {
-            mp.calc_max_move(true);
-            dispatch(updateMeiro({}));
-          } catch (err) {
-            console.log(err);
-            reject(err);
-          } finally {
-            console.log("OK");
-            resolve("OK");
-          }
-        }).then((result) => {
-          dispatch(loadEnd());
-        });
-        return process;
-      },
-      () => {}
-    );
-  },
   onAnsMeiro: () => {
     dispatch(loadStart());
     var type_ = KabeType.GOAL_POINT;
@@ -386,7 +384,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(updateMeiro({}));
     dispatch(loadEnd());
   },
-  onSpliteInit: () => {
+  onSpriteInit: () => {
     dispatch(ActionTo({ x: 10, y: 10, scale: 0.5, rot: 0 }));
   },
   onMoveLeft: () => {
@@ -408,12 +406,15 @@ const mapStateToProps = (state) => ({
   winHeight: state.common.winHeight,
   isLoading: state.common.loading,
   map: state.meiro.map, //ex[[3333333],[3000003],,,]
+  drawWidth: state.meiro.drawWidth,
+  drawLength: state.meiro.drawLength,
   drawPath: state.meiro.drawPath, //ex[[1100],[1001],,,]
   ans: state.meiro.ans,
   width: state.meiro.width,
   height: state.meiro.height,
   createrCnt: state.meiro.createrCnt,
   meiro: state.meiro,
+  offset: state.meiro.offset,
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
@@ -421,6 +422,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
+    onSetOffset: () => {
+      dispatchProps.onSetOffset(stateProps);
+    },
     onInitMeiro: async () => {
       // console.log(stateProps.meiro);
       dispatchProps.onInitMeiro(stateProps.meiro);

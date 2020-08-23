@@ -17,6 +17,7 @@ export default class MeiroMap extends Component {
       width: props.width,
       length: props.length,
       views: [],
+      offset: this.props.offset,
     };
   }
 
@@ -54,6 +55,7 @@ export default class MeiroMap extends Component {
               width={this.state.width}
               length={this.state.length}
               color={this.state.color}
+              offset={this.state.offset}
             />
           );
         });
@@ -69,6 +71,7 @@ export default class MeiroMap extends Component {
         color={"#ff00ff"}
         width={this.state.width + 6}
         length={this.state.length}
+        offset={this.state.offset}
       />
     );
 

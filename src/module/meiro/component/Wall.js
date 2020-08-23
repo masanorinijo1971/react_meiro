@@ -23,7 +23,8 @@ class Wall extends Component {
         props.x,
         props.y,
         props.width,
-        props.length
+        props.length,
+        props.offset
       ),
     };
   }
@@ -39,7 +40,8 @@ class Wall extends Component {
           this.state.x,
           this.state.y,
           this.state.width,
-          this.state.length
+          this.state.length,
+          props.offset
         ),
       });
     }
@@ -49,12 +51,12 @@ class Wall extends Component {
     return true;
   }
 
-  _madePath(type_, x_, y_, width_, length_) {
+  _madePath(type_, x_, y_, width_, length_, offset_) {
     const path = Path();
     if (type_ == "0000") {
       return path;
     }
-    var centerPt = new Point(x_, y_);
+    var centerPt = new Point(x_ + offset_.x, y_ + offset_.y);
     var pt_ = new Point(0, 0);
     var Pt1 = pt_.copy().add_xy(width_ / 2, -width_ / 2);
     var Pt2 = pt_.copy().add_xy(width_ / 2, width_ / 2);

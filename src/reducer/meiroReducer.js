@@ -57,16 +57,19 @@ export const meiroState = {
 
 export const defaultState = {
   // meiroCreater: new meiroCreater(31, 31, 2),
-  width: 49, //49
-  height: 65, //65
+  width: 29, //49
+  height: 35, //65
   createrCnt: 3, //3
   status: meiroState.init,
   createStep: 20, //一回あたりの壁生成ステップ数
   map: [], //ex[[3333333],[3000003],,,]
+  drawWidth: 2, //描写幅
+  drawLength: 12, //ブロック長さ
   drawPath: [], //ex[[1100],[1001],,,]
   ans: [], //start→goalまでの道のり
   start: { x: 1, y: 1 },
-  goal: { x: 47, y: 63 },
+  goal: { x: 27, y: 33 },
+  offset: { x: 30, y: 40 },
 };
 
 const handlers = {
@@ -79,6 +82,7 @@ const handlers = {
     var h_ = action.payload.height ?? state.height;
     var c_ = action.payload.createrCnt ?? state.createrCnt;
     var st_ = action.payload.createStep ?? state.createStep;
+    var offset_ = action.payload.offset ?? state.offset;
 
     meiroCreater.init(w_, h_, c_);
     meiroPlayer.resetHis();
@@ -92,6 +96,7 @@ const handlers = {
       map: meiroCreater.getMap(),
       drawPath: meiroCreater.drawPath(),
       ans: meiroPlayer.moveHis(),
+      offset: offset_,
     };
   },
 
@@ -100,12 +105,14 @@ const handlers = {
    */
   [updateMeiro]: (state, action) => {
     console.log("action_updateMeiro");
+    var offset_ = action.payload.offset ?? state.offset;
     return {
       ...state,
       status: meiroCreater.getStatus(),
       map: meiroCreater.getMap(),
       drawPath: meiroCreater.drawPath(),
       ans: meiroPlayer.moveHis(),
+      offset: offset_,
     };
   },
 

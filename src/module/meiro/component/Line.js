@@ -19,7 +19,8 @@ class Line extends Component {
         props.x,
         props.y,
         props.width,
-        props.length
+        props.length,
+        props.offset
       ),
     };
   }
@@ -33,7 +34,8 @@ class Line extends Component {
         this.state.x,
         this.state.y,
         this.state.width,
-        this.state.length
+        this.state.length,
+        this.props.offset
       ),
     });
   }
@@ -50,9 +52,9 @@ class Line extends Component {
    * @param {*} width_
    * @param {*} length_
    */
-  _madePath(points_, x_, y_, width_, length_) {
+  _madePath(points_, x_, y_, width_, length_, offset_) {
     const path = Path();
-    var path_points = this._madePathPoints(points_, length_, width_);
+    var path_points = this._madePathPoints(points_, length_, width_, offset_);
 
     if (path_points.length) {
       var fstFlg = true;
@@ -77,11 +79,11 @@ class Line extends Component {
    * @param {*} width_
    * @param {*} length_
    */
-  _scalePoints(points_, length_) {
+  _scalePoints(points_, length_, offset_) {
     return points_.map((pt) => {
       return {
-        x: ((pt.x - 1) * length_) / 2 + length_ / 2,
-        y: ((pt.y - 1) * length_) / 2 + length_ / 2,
+        x: ((pt.x - 1) * length_) / 2 + offset_.x,
+        y: ((pt.y - 1) * length_) / 2 + offset_.y,
       };
     });
   }
@@ -90,8 +92,8 @@ class Line extends Component {
    * pathポイントを生成する
    * @param {*} point_
    */
-  _madePathPoints(point_, length_, width_) {
-    var scale_pt = this._scalePoints(point_, length_);
+  _madePathPoints(point_, length_, width_, offset_) {
+    var scale_pt = this._scalePoints(point_, length_, offset_);
     var new_pt_ = this._recalcPoint(scale_pt);
     if (new_pt_ !== undefined && new_pt_ !== null && new_pt_.length == 0) {
       return [];
