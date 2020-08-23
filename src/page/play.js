@@ -17,6 +17,7 @@ import {
   setAnsMeiro,
   createMeiro,
   createMeiroAll,
+  setOffset,
 } from "../reducer/meiroReducer";
 import { ActionBy, ActionTo } from "../reducer/spriteReducer";
 import { loadEnd, loadStart } from "../reducer/commonReducer";
@@ -47,6 +48,7 @@ class Play extends Component {
       drawLength: props.drawLength,
       drawPath: props.drawPath, //ex[[1100],[1001],,,]
       ans: props.ans,
+      ansWidth: props.ansWidth,
       isLoading: props.isLoading,
       offset: props.offset || { x: 10, y: 10 },
     };
@@ -209,6 +211,7 @@ class Play extends Component {
               drawPath={this.state.drawPath}
               playPath={this.state.ans}
               width={this.state.drawWidth}
+              ansWidth={this.state.ansWidth}
               length={this.state.drawLength}
               color={"#ffffff"}
               offset={this.state.offset}
@@ -277,16 +280,16 @@ const mapDispatchToProps = (dispatch) => ({
   onSetOffset: (props) => {
     var off_x =
       props.winWidth / 2 -
-      ((props.width - 1) / 4) * props.drawLength -
+      (((props.width - 1) / 2) * props.drawLength) / 2 -
       props.drawWidth;
     var off_y =
       (props.winHeight - MENU_HEIGHT) / 2 -
-      ((props.height - 1) / 4) * props.drawLength -
+      (((props.height - 1) / 2) * props.drawLength) / 2 -
       props.drawWidth;
     var offset_ = { x: off_x, y: off_y };
     console.log("meiro_offset");
     console.log(offset_);
-    dispatch(updateMeiro({ offset: offset_ }));
+    dispatch(setOffset({ offset: offset_ }));
   },
   onInitMeiro: (meiro) => {
     console.log("play_onInitMeiro!!!");
@@ -410,6 +413,7 @@ const mapStateToProps = (state) => ({
   drawLength: state.meiro.drawLength,
   drawPath: state.meiro.drawPath, //ex[[1100],[1001],,,]
   ans: state.meiro.ans,
+  ansWidth: state.meiro.ansWidth,
   width: state.meiro.width,
   height: state.meiro.height,
   createrCnt: state.meiro.createrCnt,

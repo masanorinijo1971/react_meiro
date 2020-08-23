@@ -49,7 +49,8 @@ class Sprite extends Component {
       var anime = [];
       anime.push(
         Animated.timing(this.state.x, {
-          toValue: (pt.x * this.state.drawLength) / 2 + this.state.offset.x,
+          toValue:
+            (pt.x * this.state.drawLength) / 2 + this.state.offset.x - 15,
           duration: 100,
           easing: Easing.linear,
           useNativeDriver: false,
@@ -57,7 +58,7 @@ class Sprite extends Component {
       );
       anime.push(
         Animated.timing(this.state.y, {
-          toValue: (pt.y * this.state.drawLength) / 2 + this.state.offset.y,
+          toValue: (pt.y * this.state.drawLength) / 2 + this.state.offset.y + 6,
           duration: 100,
           easing: Easing.linear,
           useNativeDriver: false,

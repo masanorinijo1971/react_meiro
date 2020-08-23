@@ -33,6 +33,11 @@ export const createMeiro = createAction("create_meiro");
 export const createMeiroAll = createAction("create_meiro_all");
 
 /**
+ * 画面調整用オフセットを設定する
+ */
+export const setOffset = createAction("set_offset");
+
+/**
  * 迷路の状態
  */
 export const meiroState = {
@@ -57,8 +62,8 @@ export const meiroState = {
 
 export const defaultState = {
   // meiroCreater: new meiroCreater(31, 31, 2),
-  width: 29, //49
-  height: 35, //65
+  width: 49, //49
+  height: 65, //65
   createrCnt: 3, //3
   status: meiroState.init,
   createStep: 20, //一回あたりの壁生成ステップ数
@@ -67,9 +72,10 @@ export const defaultState = {
   drawLength: 12, //ブロック長さ
   drawPath: [], //ex[[1100],[1001],,,]
   ans: [], //start→goalまでの道のり
+  ansWidth: 4, //anserラインの幅
   start: { x: 1, y: 1 },
   goal: { x: 27, y: 33 },
-  offset: { x: 30, y: 40 },
+  offset: { x: 0, y: 0 },
 };
 
 const handlers = {
@@ -188,6 +194,15 @@ const handlers = {
       createStep: st_,
       map: meiroCreater.getMap(),
       drawPath: meiroCreater.drawPath(),
+    };
+  },
+  /**
+   * 画面調整用オフセットを設定する
+   */
+  [setOffset]: (state, action) => {
+    return {
+      ...state,
+      offset: action.payload.offset,
     };
   },
 };

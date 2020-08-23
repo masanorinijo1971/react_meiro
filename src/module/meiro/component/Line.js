@@ -82,8 +82,8 @@ class Line extends Component {
   _scalePoints(points_, length_, offset_) {
     return points_.map((pt) => {
       return {
-        x: ((pt.x - 1) * length_) / 2 + offset_.x,
-        y: ((pt.y - 1) * length_) / 2 + offset_.y,
+        x: (pt.x * length_) / 2 + offset_.x,
+        y: (pt.y * length_) / 2 + offset_.y,
       };
     });
   }

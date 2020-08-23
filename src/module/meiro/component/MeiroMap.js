@@ -15,6 +15,7 @@ export default class MeiroMap extends Component {
       line: props.playPath,
       color: props.color ? props.color : "#ffffff",
       width: props.width,
+      ansWidth: props.ansWidth,
       length: props.length,
       views: [],
       offset: this.props.offset,
@@ -69,7 +70,7 @@ export default class MeiroMap extends Component {
         points={line_}
         type={"0000"}
         color={"#ff00ff"}
-        width={this.state.width + 6}
+        width={this.state.ansWidth}
         length={this.state.length}
         offset={this.state.offset}
       />
